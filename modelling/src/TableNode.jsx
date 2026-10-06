@@ -14,7 +14,7 @@ export function TableNode({ id, data }) {
     if (titleInput.trim() && data.updateTableName) {
       data.updateTableName(id, titleInput.trim());
     }
-    setIsEditingTitle(false); // FIXED: Close title edit mode
+    setIsEditingTitle(false); 
   };
 
   const handleAddColumn = (e) => {
@@ -24,7 +24,7 @@ export function TableNode({ id, data }) {
     if (newColName.trim() && data.addColumn) {
       data.addColumn(id, newColName.trim(), newColType);
       setNewColName('');
-      setShowAddForm(false); // FIXED: Close add column form
+      setShowAddForm(false); 
     }
   };
 
