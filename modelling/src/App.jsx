@@ -15,7 +15,7 @@ export default function App() {
   const nodeTypes = useMemo(() => ({ tableNode: TableNode }), []);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
+  const [diagramId, setDiagramId] = useState(null);
   const onConnect = useCallback(
     (connection) =>
       setEdges((eds) =>
@@ -108,7 +108,31 @@ export default function App() {
     };
     setNodes((nds) => [...nds, newNode]);
   };
+  const saveDiagram = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/diagrams/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: diagramId,
+          title: 'My Database ERD',
+          nodes,
+          edges,
+        }),
+      });
 
+      const data = await response.json();
+      if (data.success) {
+        setDiagramId(data.diagram._id);
+        alert(` Saved successfully! Diagram ID: ${data.diagram._id}`);
+      } else {
+        alert(` Error: ${data.error}`);
+      }
+    } catch (err) {
+      console.error('Save failed:', err);
+      alert(' Failed to connect to server');
+    }
+  };
   return (
     <div className="w-screen h-screen relative bg-slate-950">
       <div className="absolute top-4 left-4 z-10">
@@ -117,6 +141,12 @@ export default function App() {
           className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md shadow-md transition cursor-pointer"
         >
           + Add Table
+        </button>
+        <button
+          onClick={saveDiagram}
+          className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded-md shadow-md transition cursor-pointer ml-2"
+        >
+          Save Diagram
         </button>
       </div>
 
