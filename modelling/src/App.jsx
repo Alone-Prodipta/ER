@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -10,6 +10,8 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { TableNode } from './TableNode';
+
+const API_BASE_URL = import.meta.env.DATABASE_URL || 'http://localhost:8000';
 
 export default function App() {
   const nodeTypes = useMemo(() => ({ tableNode: TableNode }), []);
@@ -110,7 +112,7 @@ export default function App() {
   };
   const saveDiagram = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/diagrams/save', {
+      const response = await fetch(`${process.env.DATABASE_URL}/api/diagrams/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

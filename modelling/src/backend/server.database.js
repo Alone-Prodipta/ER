@@ -39,7 +39,7 @@ const DiagramSchema = new mongoose.Schema({
 const Diagram = mongoose.model("Diagram", DiagramSchema);
 
 // Save or Update Diagram
-app.post("/api/diagrams/save", async (req, res) => {
+app.post(`${process.env.DATABASE_URL}/api/diagrams/save`, async (req, res) => {
   try {
     const { id, title, nodes, edges } = req.body;
     let diagram;
