@@ -14,7 +14,7 @@
 - [Development Setup](#development-setup)
 - [Contributors](#contributors)
 - [Contributing](#contributing)
-- [License](#license)
+
 
 ## 📝 Description
 
