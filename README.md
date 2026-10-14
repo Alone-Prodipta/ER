@@ -1,7 +1,6 @@
 # ER
 
-![GitHub stars](https://img.shields.io/github/stars/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![GitHub forks](https://img.shields.io/github/forks/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![GitHub issues](https://img.shields.io/github/issues/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![Last commit](https://img.shields.io/github/last-commit/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![License](https://img.shields.io/badge/license-ISC-green?style=for-the-badge)
-
+![GitHub stars](https://img.shields.io/github/stars/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![GitHub forks](https://img.shields.io/github/forks/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![GitHub issues](https://img.shields.io/github/issues/Alone-Prodipta/ER?style=for-the-badge&logo=github) ![Last commit](https://img.shields.io/github/last-commit/Alone-Prodipta/ER?style=for-the-badge&logo=github) 
 ## 📑 Table of Contents
 
 - [Description](#description)
