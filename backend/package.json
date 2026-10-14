@@ -1,0 +1,18 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "a backend package",
+  "license": "ISC",
+  "author": "Prodipta nayeb",
+  "type": "module",
+  "main": "server.database.js",
+  "scripts": {
+    "dev": "node --watch server.database.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "mongoose": "^9.11.2"
+  }
+}

@@ -1,13 +1,13 @@
+import "dotenv/config";
 import mongoose from "mongoose";
 import cors from "cors";
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config({
-    path:'./.env',
-});
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+        credentials: true,
+}));
 app.use(express.json());
 
 // MongoDB Atlas Connection
@@ -39,7 +39,7 @@ const DiagramSchema = new mongoose.Schema({
 const Diagram = mongoose.model("Diagram", DiagramSchema);
 
 // Save or Update Diagram
-app.post(`${process.env.DATABASE_URL}/api/diagrams/save`, async (req, res) => {
+app.post(`/api/diagrams/save`, async (req, res) => {
   try {
     const { id, title, nodes, edges } = req.body;
     let diagram;
