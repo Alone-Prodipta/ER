@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function TableNameEditor({ id, name, onRename }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(name || 'table');
-
-  useEffect(() => setValue(name || 'table'), [name]);
 
   const submit = (event) => {
     event?.preventDefault();
@@ -30,7 +28,7 @@ export default function TableNameEditor({ id, name, onRename }) {
       ) : (
         <button
           type="button"
-          onClick={() => setEditing(true)}
+          onClick={() => { setValue(name || 'table'); setEditing(true); }}
           title="Click to rename table"
           className="w-full cursor-pointer text-left text-sm font-bold text-slate-200 transition hover:text-indigo-300"
         >

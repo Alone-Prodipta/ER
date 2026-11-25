@@ -24,7 +24,7 @@ export default async function requireAuth(req, res, next) {
     }).populate('user', 'email');
 
     if (!session?.user) {
-      const sameSite = process.env.COOKIE_SAME_SITE;
+      const sameSite = process.env.COOKIE_SAME_SITE || 'lax';
       res.clearCookie(SESSION_COOKIE_NAME, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' || sameSite === 'none',

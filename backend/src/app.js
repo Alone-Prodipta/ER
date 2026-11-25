@@ -5,6 +5,9 @@ import diagramRoutes from './routes/diagram.routes.js';
 import errorHandler from './middlewares/errorHandler.middlewares.js';
 
 const app = express();
+if (process.env.NODE_ENV === 'production' && !process.env.CORS_ORIGIN) {
+  throw new Error('CORS_ORIGIN must be set to the deployed frontend origin in production.');
+}
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim())

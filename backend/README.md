@@ -14,6 +14,8 @@ Express API for the React Flow editor. Diagram documents are stored in MongoDB a
 
 The API listens on port `5000` by default. `COOKIE_SAME_SITE=lax` is suitable when the frontend and API use localhost. For a frontend on a separate HTTPS site, configure `COOKIE_SAME_SITE=none`; production cookies are then marked Secure, and CORS must list the exact frontend origin.
 
+For deployment, set `NODE_ENV=production`, `MONGODB_URI` to the Atlas URI, `CORS_ORIGIN` to the exact deployed frontend origin, and the frontend build variable `VITE_BACKEND_API_URL` to the deployed API origin (unless a reverse proxy serves the API at the frontend origin). Serve both endpoints over HTTPS.
+
 ## Accounts and privacy
 
 - Create an account from the landing page with an email and a password of exactly 5 characters.

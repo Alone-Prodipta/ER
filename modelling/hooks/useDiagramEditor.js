@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { addEdge, MarkerType, useEdgesState, useNodesState } from '@xyflow/react';
 import TableNode from '../components/TableNode';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL
+  || (import.meta.env.DEV ? 'http://localhost:5000' : '');
 const LAST_DIAGRAM_KEY = 'er-modeller:last-diagram-id';
 const DEFAULT_VIEWPORT = { x: 0, y: 0, zoom: 1 };
 
@@ -159,7 +160,9 @@ export default function useDiagramEditor(onUnauthorized) {
     }
   }, [edges, nodes, onUnauthorized, title, viewport]);
 
-  saveDiagramRef.current = saveDiagram;
+  useEffect(() => {
+    saveDiagramRef.current = saveDiagram;
+  }, [saveDiagram]);
 
   useEffect(() => {
     if (!isDirty || isRestoring) return undefined;
