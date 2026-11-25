@@ -3,7 +3,7 @@ import AuthPage from './AuthPage';
 import DiagramWorkspace from './DiagramWorkspace';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL
-  || (import.meta.env.DEV ? 'http://localhost:5000' : '');
+  || '';
 
 export default function App() {
   const [authState, setAuthState] = useState('checking');
