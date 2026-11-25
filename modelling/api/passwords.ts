@@ -1,0 +1,19 @@
+import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
+import { promisify } from 'node:util';
+
+const scrypt = promisify(scryptCallback);
+const KEY_LENGTH = 64;
+
+export async function hashPassword(password) {
+  const salt = randomBytes(16).toString('hex');
+  const derivedKey = await scrypt(password, salt, KEY_LENGTH);
+  return `${salt}:${derivedKey.toString('hex')}`;
+}
+
+export async function verifyPassword(password, storedHash) {
+  const [salt, keyHex] = String(storedHash).split(':');
+  if (!salt || !keyHex || !/^[a-f0-9]+$/i.test(keyHex)) return false;
+  const expectedKey = Buffer.from(keyHex, 'hex');
+  const candidateKey = await scrypt(password, salt, expectedKey.length);
+  return expectedKey.length === candidateKey.length && timingSafeEqual(expectedKey, candidateKey);
+}
