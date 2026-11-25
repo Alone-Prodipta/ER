@@ -6,6 +6,10 @@ const diagramSchema = new mongoose.Schema(
     // Keep React Flow payloads flexible as the editor adds node and edge properties.
     nodes: { type: [mongoose.Schema.Types.Mixed], default: [] },
     edges: { type: [mongoose.Schema.Types.Mixed], default: [] },
+    viewport: {
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({ x: 0, y: 0, zoom: 1 }),
+    },
   },
   { timestamps: true, versionKey: false },
 );

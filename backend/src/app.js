@@ -5,7 +5,7 @@ import diagramRoutes from './routes/diagram.routes.js';
 import errorHandler from './middlewares/errorHandler.middlewares.js';
 
 const app = express();
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+const allowedOrigins = (process.env.CORS_ORIGIN)
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);

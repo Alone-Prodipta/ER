@@ -4,7 +4,7 @@ import { serializeDiagram } from '../utilities/diagram.serializer.js';
 
 export async function saveDiagram(req, res, next) {
   try {
-    const { id, title, nodes, edges } = req.body ?? {};
+    const { id, title, nodes, edges, viewport } = req.body ?? {};
     if (typeof title !== 'string' || !title.trim()) {
       return res.status(400).json({ success: false, error: 'title must be a non-empty string.' });
     }
@@ -14,11 +14,18 @@ export async function saveDiagram(req, res, next) {
     if (!Array.isArray(nodes) || !Array.isArray(edges)) {
       return res.status(400).json({ success: false, error: 'nodes and edges must be arrays.' });
     }
+    if (viewport !== undefined && (
+      !viewport || typeof viewport !== 'object' ||
+      !Number.isFinite(viewport.x) || !Number.isFinite(viewport.y) ||
+      !Number.isFinite(viewport.zoom) || viewport.zoom <= 0
+    )) {
+      return res.status(400).json({ success: false, error: 'viewport must contain finite x, y, and positive zoom values.' });
+    }
     if (id && !mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, error: 'id must be a valid diagram ID.' });
     }
 
-    const values = { title: title.trim(), nodes, edges };
+    const values = { title: title.trim(), nodes, edges, ...(viewport ? { viewport } : {}) };
     const diagram = id
       ? await Diagram.findByIdAndUpdate(id, values, { new: true, runValidators: true })
       : await Diagram.create(values);

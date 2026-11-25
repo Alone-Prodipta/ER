@@ -2,7 +2,7 @@ import 'dotenv/config';
 import app from './src/app.js';
 import connectDatabase from './src/database/db.database.js';
 
-const port = Number(process.env.PORT) || 5000;
+const port = Number(process.env.PORT);
 
 try {
   await connectDatabase();

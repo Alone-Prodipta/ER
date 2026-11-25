@@ -16,7 +16,7 @@ The default API address is `http://localhost:5000`; the default database is `er_
 
 ## Endpoints
 
-All responses use JSON. Diagram objects contain MongoDB `_id`, `title`, `nodes`, `edges`, `createdAt`, and `updatedAt` fields.
+All responses use JSON. Diagram objects contain MongoDB `_id`, `title`, `nodes`, `edges`, `viewport`, `createdAt`, and `updatedAt` fields.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -33,7 +33,8 @@ Save request body:
   "id": null,
   "title": "My Database ERD",
   "nodes": [],
-  "edges": []
+  "edges": [],
+  "viewport": { "x": 0, "y": 0, "zoom": 1 }
 }
 ```
 
