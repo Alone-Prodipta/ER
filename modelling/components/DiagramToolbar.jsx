@@ -1,8 +1,9 @@
 import SaveStatus from './SaveStatus';
+import AccountMenu from './AccountMenu';
 
 export default function DiagramToolbar({
-  title, diagrams, diagramId, saveStatus, isDirty, isRestoring,
-  onTitleChange, onAddTable, onNewDiagram, onSelectDiagram, onSave,
+  title, diagrams, diagramId, saveStatus, isDirty, isRestoring, user, accountMessage,
+  onTitleChange, onAddTable, onNewDiagram, onSelectDiagram, onSave, onLogout,
 }) {
   return (
     <header className="absolute left-4 right-4 top-4 z-10 flex flex-wrap items-end gap-2 rounded-xl border border-slate-700 bg-slate-900/95 p-3 shadow-xl backdrop-blur">
@@ -14,8 +15,9 @@ export default function DiagramToolbar({
       </button>
 
       <label className="flex min-w-48 flex-col gap-1 text-xs font-medium text-slate-300">
+        
         <input
-          
+          aria-label="Diagram name"
           placeholder="Untitled ER Diagram"
           value={title}
           maxLength={120}
@@ -26,8 +28,9 @@ export default function DiagramToolbar({
       </label>
 
       <label className="flex flex-col gap-1 text-xs font-medium text-slate-300">
+        
         <select
-          
+          aria-label="Open saved diagram"
           value={diagramId || ''}
           onChange={(event) => event.target.value && onSelectDiagram(event.target.value)}
           disabled={isRestoring}
@@ -42,6 +45,7 @@ export default function DiagramToolbar({
         Save Now
       </button>
       <SaveStatus status={isRestoring ? 'Opening your diagram…' : saveStatus} />
+      <AccountMenu email={user.email} onLogout={onLogout} message={accountMessage} />
     </header>
   );
 }

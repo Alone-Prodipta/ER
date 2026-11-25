@@ -1,32 +1,53 @@
 # ER Modeller API
 
-Express API for saving ER diagrams from the React Flow editor. Diagrams are stored in MongoDB. This API intentionally has no authentication.
+Express API for the React Flow editor. Diagram documents are stored in MongoDB and are private to the account that owns them.
 
-## Start
+## Run locally
 
-1. Ensure the MongoDB service is running locally.
-2. Copy `.env.example` to `.env` and adjust `MONGODB_URI` if your local MongoDB uses a different address.
-3. From this directory run:
+1. Configure `MONGODB_URI` in `.env` with the local MongoDB or Atlas connection string.
+2. Set `CORS_ORIGIN` to the exact frontend origin. For Vite's default address, use `http://localhost:5173`.
+3. Start the backend from this directory:
 
    ```sh
    npm run dev
    ```
 
-The default API address is `http://localhost:5000`; the default database is `er_modeller`. Set `VITE_BACKEND_API_URL=http://localhost:5000` in the frontend environment if the frontend needs an explicit API URL.
+The API listens on port `5000` by default. `COOKIE_SAME_SITE=lax` is suitable when the frontend and API use localhost. For a frontend on a separate HTTPS site, configure `COOKIE_SAME_SITE=none`; production cookies are then marked Secure, and CORS must list the exact frontend origin.
+
+## Accounts and privacy
+
+- Create an account from the landing page with an email and a password of exactly 5 characters.
+- Passwords are stored as salted scrypt hashes. The browser receives an HttpOnly session cookie; session tokens are stored hashed in MongoDB and expire after seven days.
+- All diagram endpoints require a valid session. Reads, updates, and deletes filter by the authenticated owner, so knowing another diagram's ID does not grant access.
+- Existing diagrams created before account ownership was added have no owner and are intentionally hidden from every account. Assign them to an account with a deliberate one-time migration if they need to be retained.
+- Keep the Atlas connection string and its database user's password only in the backend `.env`, never in frontend code.
 
 ## Endpoints
 
-All responses use JSON. Diagram objects contain MongoDB `_id`, `title`, `nodes`, `edges`, `viewport`, `createdAt`, and `updatedAt` fields.
+All responses use JSON. Auth endpoints set or clear the HttpOnly session cookie.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET | `/api/health` | API and MongoDB connection status |
-| POST | `/api/diagrams/save` | Create a diagram, or update one when `id` is provided |
-| GET | `/api/diagrams?limit=50` | List recent diagrams (metadata only; limit is capped at 100) |
-| GET | `/api/diagrams/:id` | Load a diagram including its nodes and edges |
-| DELETE | `/api/diagrams/:id` | Delete a diagram |
+| POST | `/api/auth/register` | Create an account and sign in |
+| POST | `/api/auth/login` | Sign in |
+| POST | `/api/auth/logout` | End the current session |
+| GET | `/api/auth/me` | Return the current account or `401` |
+| POST | `/api/diagrams/save` | Create or update an owned diagram |
+| GET | `/api/diagrams?limit=50` | List owned diagrams (metadata only; capped at 100) |
+| GET | `/api/diagrams/:id` | Load an owned diagram |
+| DELETE | `/api/diagrams/:id` | Delete an owned diagram |
 
-Save request body:
+Registration/login request body:
+
+```json
+{
+  "email": "you@example.com",
+  "password": "12345"
+}
+```
+
+Diagram save body:
 
 ```json
 {
@@ -37,5 +58,3 @@ Save request body:
   "viewport": { "x": 0, "y": 0, "zoom": 1 }
 }
 ```
-
-Omit `id` (or send `null`) to create a new diagram. Use the returned diagram `_id` to update it later. `CORS_ORIGIN` accepts a comma-separated list of frontend origins.

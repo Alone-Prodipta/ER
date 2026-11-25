@@ -13,7 +13,7 @@ function attachTableActions(savedNodes, actions) {
   }));
 }
 
-export default function useDiagramEditor() {
+export default function useDiagramEditor(onUnauthorized) {
   const nodeTypes = useMemo(() => ({ tableNode: TableNode }), []);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -64,12 +64,13 @@ export default function useDiagramEditor() {
   );
 
   const refreshDiagramList = useCallback(async () => {
-    const response = await fetch(`${API_BASE_URL}/api/diagrams?limit=100`);
+    const response = await fetch(`${API_BASE_URL}/api/diagrams?limit=100`, { credentials: 'include' });
+    if (response.status === 401) onUnauthorized();
     const data = await response.json();
     if (!response.ok || !data.success) throw new Error(data.error || 'Could not load saved diagrams.');
     setDiagrams(data.diagrams);
     return data.diagrams;
-  }, []);
+  }, [onUnauthorized]);
 
   const applyDiagram = useCallback((diagram) => {
     diagramIdRef.current = diagram._id;
@@ -88,14 +89,15 @@ export default function useDiagramEditor() {
     setIsDirty(false);
     setSaveStatus('Opening diagram…');
     try {
-      const response = await fetch(`${API_BASE_URL}/api/diagrams/${id}`);
+      const response = await fetch(`${API_BASE_URL}/api/diagrams/${id}`, { credentials: 'include' });
+      if (response.status === 401) onUnauthorized();
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || 'Could not open this diagram.');
       applyDiagram(data.diagram);
     } catch (error) {
       setSaveStatus(error.message || 'Could not connect to the backend.');
     }
-  }, [applyDiagram, isDirty]);
+  }, [applyDiagram, isDirty, onUnauthorized]);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,6 +125,7 @@ export default function useDiagramEditor() {
     const saveJob = saveQueueRef.current.catch(() => {}).then(async () => {
       const response = await fetch(`${API_BASE_URL}/api/diagrams/save`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: diagramIdRef.current,
@@ -132,6 +135,7 @@ export default function useDiagramEditor() {
           viewport,
         }),
       });
+      if (response.status === 401) onUnauthorized();
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || 'Could not save the diagram.');
       diagramIdRef.current = data.diagram._id;
@@ -153,7 +157,7 @@ export default function useDiagramEditor() {
       setSaveStatus(error.message || 'Save failed. Check that the backend and MongoDB are running.');
       return false;
     }
-  }, [edges, nodes, title, viewport]);
+  }, [edges, nodes, onUnauthorized, title, viewport]);
 
   saveDiagramRef.current = saveDiagram;
 

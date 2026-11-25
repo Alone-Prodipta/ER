@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const diagramSchema = new mongoose.Schema(
   {
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     title: { type: String, required: true, trim: true, maxlength: 120 },
     // Keep React Flow payloads flexible as the editor adds node and edge properties.
     nodes: { type: [mongoose.Schema.Types.Mixed], default: [] },

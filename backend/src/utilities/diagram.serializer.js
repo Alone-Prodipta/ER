@@ -1,3 +1,5 @@
 export function serializeDiagram(diagram) {
-  return diagram.toObject();
+  const value = diagram.toObject();
+  delete value.owner;
+  return value;
 }

@@ -25,9 +25,9 @@ export async function saveDiagram(req, res, next) {
       return res.status(400).json({ success: false, error: 'id must be a valid diagram ID.' });
     }
 
-    const values = { title: title.trim(), nodes, edges, ...(viewport ? { viewport } : {}) };
+    const values = { owner: req.user._id, title: title.trim(), nodes, edges, ...(viewport ? { viewport } : {}) };
     const diagram = id
-      ? await Diagram.findByIdAndUpdate(id, values, { new: true, runValidators: true })
+      ? await Diagram.findOneAndUpdate({ _id: id, owner: req.user._id }, values, { new: true, runValidators: true })
       : await Diagram.create(values);
     if (!diagram) return res.status(404).json({ success: false, error: 'Diagram not found.' });
     return res.json({ success: true, diagram: serializeDiagram(diagram) });
@@ -40,7 +40,7 @@ export async function listDiagrams(req, res, next) {
   try {
     const requestedLimit = Number.parseInt(req.query.limit, 10);
     const limit = Number.isInteger(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 100) : 50;
-    const diagrams = await Diagram.find()
+    const diagrams = await Diagram.find({ owner: req.user._id })
       .sort({ updatedAt: -1 })
       .limit(limit)
       .select('-nodes -edges');
@@ -55,7 +55,7 @@ export async function getDiagram(req, res, next) {
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ success: false, error: 'id must be a valid diagram ID.' });
     }
-    const diagram = await Diagram.findById(req.params.id);
+    const diagram = await Diagram.findOne({ _id: req.params.id, owner: req.user._id });
     if (!diagram) return res.status(404).json({ success: false, error: 'Diagram not found.' });
     return res.json({ success: true, diagram: serializeDiagram(diagram) });
   } catch (error) {
@@ -68,7 +68,7 @@ export async function deleteDiagram(req, res, next) {
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ success: false, error: 'id must be a valid diagram ID.' });
     }
-    const diagram = await Diagram.findByIdAndDelete(req.params.id);
+    const diagram = await Diagram.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
     if (!diagram) return res.status(404).json({ success: false, error: 'Diagram not found.' });
     return res.json({ success: true, message: 'Diagram deleted.' });
   } catch (error) {
