@@ -12,7 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { TableNode } from './TableNode';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5000';
 
 export default function App() {
   const nodeTypes = useMemo(() => ({ tableNode: TableNode }), []);
