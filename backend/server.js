@@ -2,7 +2,7 @@ import './src/config/environment.js';
 import app from './src/app.js';
 import connectDatabase from './src/database/db.database.js';
 
-const port = Number.parseInt(process.env.PORT, 10) || 5000;
+const port = Number.parseInt(process.env.PORT, 10);
 
 try {
   await connectDatabase();
