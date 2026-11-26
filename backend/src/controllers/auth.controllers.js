@@ -8,7 +8,7 @@ const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function setSessionCookie(res, token) {
-  const sameSite = process.env.COOKIE_SAME_SITE || 'lax';
+  const sameSite = process.env.COOKIE_SAME_SITE;
   res.cookie(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production' || sameSite === 'none',
@@ -79,7 +79,7 @@ export async function logout(req, res, next) {
     res.clearCookie(SESSION_COOKIE_NAME, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production' || process.env.COOKIE_SAME_SITE === 'none',
-      sameSite: process.env.COOKIE_SAME_SITE || 'lax',
+      sameSite: process.env.COOKIE_SAME_SITE,
       path: '/',
     });
     return res.json({ success: true });
